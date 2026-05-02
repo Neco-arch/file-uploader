@@ -12,11 +12,11 @@ datasource db {
   provider = "postgresql"
 }
 
-model session {
+model Session {
   id        String   @id
   sid       String   @unique
   data      String   
-  expiresAt DateTime
+  expiresAt   DateTime
 }
 
 model userdata {
