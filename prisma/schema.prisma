@@ -15,13 +15,23 @@ datasource db {
 model Session {
   id        String   @id
   sid       String   @unique
-  data      String   
-  expiresAt   DateTime
+  data      String
+  expiresAt DateTime
+
+  @@map("session")
 }
 
 model userdata {
-  id       Int    @id @default(autoincrement())
-  username String @unique
-  email    String @unique
-  password String 
+  id       Int        @id @default(autoincrement())
+  username String     @unique
+  email    String     @unique
+  password String
+  filedata Filedata[]
+}
+
+model Filedata {
+  fileid   Int
+  filename String   @unique
+  ownerId  Int
+  Owner    userdata @relation(fields: [ownerId], references: [id])
 }

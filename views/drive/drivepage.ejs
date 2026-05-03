@@ -1,0 +1,23 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>Drive</title>
+</head>
+<body>
+    <%- include('../component/side-bar') %>
+    <main>
+        <% if (locals.user) { %>
+            <h1>WELCOME BACK <%= user.username %></h1>
+            <form action="/drive/upload" method="post" enctype="multipart/form-data">
+                <input type="file" name="fileupload" >
+                <button type="submit">Upload file</button>
+            </form>
+        <% } %>
+    </main>
+    <script>
+
+    </script>
+</body>
+</html>

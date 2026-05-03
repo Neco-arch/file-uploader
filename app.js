@@ -15,16 +15,11 @@ app.set("views", path.join(__dirname, "views"));
 app.set("view engine", "ejs");
 app.use(express.urlencoded({ extended: true }))
 
-// Router 
-const sign_up = require('./router/sign-up.js')
-
-app.use('/sign-up' , sign_up )
-
-
 // Passport 
 
 const { serializeUser , deserializeUser} = require("./passport/serialize_deserial.js")
 const { Strategy } = require("./passport/verify.js")
+const { globalreq_user } = require("./controller/reqglobal.js")
 
 passport.use(Strategy)
 app.use(
@@ -41,6 +36,7 @@ app.use(
         checkPeriod: 2 * 60 * 1000,  //ms
         dbRecordIdIsSessionId: true,
         dbRecordIdFunction: undefined,
+        sessionModelName : 'session',
       }
     )
   })
@@ -49,7 +45,16 @@ app.use(
 app.use(passport.session());
 passport.serializeUser(serializeUser)
 passport.deserializeUser(deserializeUser)
+app.use(globalreq_user)
 
+
+
+// Router 
+const sign_up = require('./router/sign-up.js')
+const drive = require('./router/drive.js')
+
+app.use('/sign-up' , sign_up )
+app.use('/drive' , drive)
 
 //Router in main
 
@@ -66,6 +71,7 @@ app.post(
     failureRedirect: "/log-in"
   }),
 );
+
 
 app.listen(3000, (error) => {
   if (error) {
