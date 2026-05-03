@@ -25,6 +25,8 @@ app.use('/sign-up' , sign_up )
 
 const { serializeUser , deserializeUser} = require("./passport/serialize_deserial.js")
 const { Strategy } = require("./passport/verify.js")
+
+passport.use(Strategy)
 app.use(
   expressSession({
     cookie: {
@@ -45,7 +47,6 @@ app.use(
 );
 
 app.use(passport.session());
-passport.use(Strategy)
 passport.serializeUser(serializeUser)
 passport.deserializeUser(deserializeUser)
 
@@ -54,16 +55,17 @@ passport.deserializeUser(deserializeUser)
 
 app.get("/", (req, res) => res.render("main" , {user : req.user}));
 
-app.get("/log-in" , (req,res) => {
+app.get("/log-in" , async (req,res) => {
   res.render("log-in/log-in")
 })
 
-app.post("/log-in" , (req,res) => {
-  passport.authenticate("local" , {
-    successRedirect : "/",
-    failureRedirect : "/log-in"
-  })
-})
+app.post(
+  "/log-in",
+  passport.authenticate("local", {
+    successRedirect: "/",
+    failureRedirect: "/log-in"
+  }),
+);
 
 app.listen(3000, (error) => {
   if (error) {
