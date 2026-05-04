@@ -18,7 +18,7 @@ const storage = multer.diskStorage({
 
 })
 const upload = multer({limits : {
-    fileSize : 5 * 1024 * 1024 ,
+    fileSize : 10 * 1024 * 1024 ,
     files : 4
 } , storage : storage})
 
@@ -26,17 +26,23 @@ const upload = multer({limits : {
 const Router = express()
 
 
-Router.get('/' , (req,res) => {
+Router.get('/' , async (req,res) => {
+    const dd = await connectdb.ViewFolder(req,res)
     if (req.user) {
-        res.render('drive/drivepage' , {user : req.user })
+        res.render('drive/drivepage' , {user : req.user , items : dd})
     } else {
         res.redirect('/')
     }
 })
 
 
+Router.post('/createfolder' , async (req,res) => {
+    await connectdb.InsertFolderDetail(req,res)  
+})
+
+
 Router.post('/upload' , upload.single('fileupload') , async (req,res) => {
-    await connectdb.UploadFileDetail(req,res)
+    await connectdb.InsertFileDetail(req,res)
     res.redirect("/")
 })
 

@@ -1,6 +1,6 @@
 const bcrypt = require("bcryptjs");
 const express = require("express")
-const { DbPart } = require("../models/quries")
+const { DbPart } = require("../models/quries.js")
 
 const DbQuery = new DbPart
 

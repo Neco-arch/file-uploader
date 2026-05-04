@@ -27,11 +27,20 @@ model userdata {
   email    String     @unique
   password String
   filedata Filedata[]
+  folders  Folder[]
 }
 
 model Filedata {
-  fileid   Int  @id @default(autoincrement())
-  filename String   @unique
-  ownerId  Int 
+  fileid   Int      @id @default(autoincrement())
+  filename String   
+  ownerId  Int
   Owner    userdata @relation(fields: [ownerId], references: [id])
+  path String?
 }
+
+  model Folder {
+    id         Int      @id @default(autoincrement())
+    foldername String   
+    ownerId    Int
+    Owner      userdata @relation(fields: [ownerId], references: [id])
+  }

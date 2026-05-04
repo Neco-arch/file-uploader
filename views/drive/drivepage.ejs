@@ -8,21 +8,61 @@
 <body>
     <%- include('../component/side-bar') %>
     <main>
+        <h1>WELCOME BACK <%= user.username %></h1>
+        <button class="Upload_file">Upload file</button>
+        <button class="Create_Folder">Create folder</button>
+        <div class="Folder">
+            <% items.forEach(item => { %>
+                <form action="/viewfolder" method="post">
+                    <h2>Foldername</h2>
+                    <button type="submit">View Folder</button>
+                </form>
+            <% }) %>
+        </div>
+    </main>
+
+
+    <dialog id="UploadFile_Form">
         <% if (locals.user) { %>
-            <h1>WELCOME BACK <%= user.username %></h1>
             <form action="/drive/upload" method="post" enctype="multipart/form-data">
-                <input type="file" name="fileupload" >
+                <label>File : </label><input type="file" name="fileupload" >
                 <input type="hidden" name="Uploader" value="<%= user.username %>">
                 <input type="hidden" name="Uploader_id" value="<%= user.id %>">
                 <button type="submit">Upload file</button>
             </form>
+            <button class="Cancel_UploadFile">Cancel</button>
         <% } %>
+    </dialog>
 
-        <div class="All_file">
-            
-        </div>
-    </main>
+    <dialog id="CreateFolder_Form">
+        <% if (locals.user) { %>
+            <form action="/drive/createfolder" method="post" >
+                <label>FolderName :</label><input type="text" name="foldername" >
+                <input type="hidden" name="Uploader_id" value="<%= user.id %>">
+                <button type="submit">Create Folder</button>
+            </form>
+            <button class="CancelCreateFolder">Cancel</button>
+        <% } %>
+    </dialog>
     <script>
+        const UploadForm = document.querySelector("#UploadFile_Form")
+        const CreateFolder = document.querySelector("#CreateFolder_Form")
+
+        document.querySelector(".Upload_file").addEventListener("click" , () => {
+            UploadForm.showModal()
+        })
+
+        document.querySelector(".Cancel_UploadFile").addEventListener("click" , () => {
+            UploadForm.close()
+        })
+
+        document.querySelector(".Create_Folder").addEventListener("click" , () => {
+            CreateFolder.showModal()
+        })
+
+        document.querySelector(".CancelCreateFolder").addEventListener("click" , () => {
+            CreateFolder.close()
+        })
 
     </script>
 </body>
