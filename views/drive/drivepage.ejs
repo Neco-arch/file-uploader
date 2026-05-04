@@ -12,9 +12,15 @@
             <h1>WELCOME BACK <%= user.username %></h1>
             <form action="/drive/upload" method="post" enctype="multipart/form-data">
                 <input type="file" name="fileupload" >
+                <input type="hidden" name="Uploader" value="<%= user.username %>">
+                <input type="hidden" name="Uploader_id" value="<%= user.id %>">
                 <button type="submit">Upload file</button>
             </form>
         <% } %>
+
+        <div class="All_file">
+            
+        </div>
     </main>
     <script>
 

@@ -30,8 +30,8 @@ model userdata {
 }
 
 model Filedata {
-  fileid   Int
+  fileid   Int  @id @default(autoincrement())
   filename String   @unique
-  ownerId  Int
+  ownerId  Int 
   Owner    userdata @relation(fields: [ownerId], references: [id])
 }

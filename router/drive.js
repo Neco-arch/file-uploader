@@ -2,7 +2,9 @@ const express = require('express')
 const multer  = require('multer')
 const passport = require('passport')
 const path = require('path');
+const { DbPart } = require('../models/quries')
 
+const connectdb = new DbPart
 
 const storage = multer.diskStorage({
   destination: function (req, file, cb) {
@@ -33,8 +35,8 @@ Router.get('/' , (req,res) => {
 })
 
 
-Router.post('/upload' , upload.single('fileupload') , (req,res , next) => {
-    console.log(req.file)
+Router.post('/upload' , upload.single('fileupload') , async (req,res) => {
+    await connectdb.UploadFileDetail(req,res)
     res.redirect("/")
 })
 

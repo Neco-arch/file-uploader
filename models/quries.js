@@ -20,6 +20,23 @@ class DbPart {
             console.log(error)
         }
     }
+
+    async UploadFileDetail(req,res) {
+        const user = await prismaController.userdata.findUnique({
+            where : {
+                id : req.body.id
+            }
+        })
+
+        if (user) {
+            await prismaController.filedata.create({
+            data : {
+                ownerId : req.body.id
+                
+            }
+        })
+        }
+    }
 }
 
 module.exports = { DbPart };
