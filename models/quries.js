@@ -7,66 +7,79 @@ const path = require('path')
 class DbPart {
 
     // User
-     async InsertNewUser(username , password ,email) {
+    async InsertNewUser(username, password, email) {
         try {
             console.log(prismaController)
             const hashedPassword = await bcrypt.hash(password, 10);
             await prismaController.userdata.create({
-                data : {
-                    email : email,
-                    username : username,
-                    password : hashedPassword
+                data: {
+                    email: email,
+                    username: username,
+                    password: hashedPassword
                 }
             })
-        } 
-        catch(error) {
+        }
+        catch (error) {
             console.log(error)
         }
     }
 
     // File
 
-    async InsertFileDetail(req,res) {
-            await prismaController.filedata.create({
-            data : {
-                filename : req.file.filename,
-                Owner : {
-                    connect : { id : parseInt(req.body.Uploader_id) }
+    async InsertFileDetail(req, res) {
+        const referer = req.headers.referer
+        await prismaController.filedata.create({
+            data: {
+                filename: req.file.filename,
+                Owner: {
+                    connect: { id: parseInt(req.body.Uploader_id) }
                 },
-                path : req.url
+                path: new URL(referer).pathname
             }
         })
     }
 
-    //Folder 
-
-    async InsertFolderDetail(req,res) {
-        await prismaController.folder.create({
-            data : {
-                foldername : req.body.foldername,
-                Owner : {
-                    connect : {id :  parseInt(req.body.Uploader_id) }
-                }
-            }                 
-        })
-    }
-
-    async ViewFolder(req,res,start) {
+    async ShowFile(filepath,req) {
         return await prismaController.filedata.findMany({
             where : {
-                path : req.url,
-                ownerId : req.user.id
+                path : filepath, 
+                Owner : {
+                    id : parseInt(req.user.id)
+                }
+            }
+        })
+    }
+    //Folder 
+
+    async InsertFolderDetail(req, res) {
+        await prismaController.folder.create({
+            data: {
+                foldername: req.body.foldername,
+                Owner: {
+                    connect: { id: parseInt(req.body.Uploader_id) }
+                },
             }
         })
     }
 
-    async DeleteFolder(req,res) {
+    async ViewFolder(req, res) {
+        const result = await prismaController.folder.findMany({
+            where: {
+                ownerId: parseInt(req.user.id)
+            }
+        });
+        return result;
+    }
+
+    async DeleteFolder(req, res) {
         await prismaController.folder.delete({
-            where : {
-                foldername : req.foldername
+            where: {
+                foldername: req.foldername
             }
         })
     }
+
+
 
 
 }

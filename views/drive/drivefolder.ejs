@@ -8,21 +8,14 @@
 <body>
     <%- include('../component/side-bar') %>
     <main>
-        <h1>WELCOME BACK <%= foldername %></h1>
+        <h1><%= folder.name %></h1>
         <button class="Upload_file">Upload file</button>
-        <button class="Create_Folder">Create folder</button>
         <div class="Folder">
-            <% items.forEach(item => { %>
+            <% Files.forEach(item => { %>
                 <form action="/drive/viewfolder" method="post">
                     <h2><%=item.foldername %></h2>
                     <input type="hidden" value="<%=item.foldername %>" name="foldername">
                     <button type="submit">View Folder</button>
-                </form>
-            <% }) %>
-            <% files.forEach(file => { %>
-                <form action="/drive/viewfile" method="post">
-                    <h2><%=file.filename%></h2>
-                    <button type="submit">View File</button>
                 </form>
             <% }) %>
         </div>
@@ -41,19 +34,8 @@
         <% } %>
     </dialog>
 
-    <dialog id="CreateFolder_Form">
-        <% if (locals.user) { %>
-            <form action="/drive/createfolder" method="post" >
-                <label>FolderName :</label><input type="text" name="foldername" >
-                <input type="hidden" name="Uploader_id" value="<%= user.id %>">
-                <button type="submit">Create Folder</button>
-            </form>
-            <button class="CancelCreateFolder">Cancel</button>
-        <% } %>
-    </dialog>
     <script>
         const UploadForm = document.querySelector("#UploadFile_Form")
-        const CreateFolder = document.querySelector("#CreateFolder_Form")
 
         document.querySelector(".Upload_file").addEventListener("click" , () => {
             UploadForm.showModal()
@@ -62,15 +44,6 @@
         document.querySelector(".Cancel_UploadFile").addEventListener("click" , () => {
             UploadForm.close()
         })
-
-        document.querySelector(".Create_Folder").addEventListener("click" , () => {
-            CreateFolder.showModal()
-        })
-
-        document.querySelector(".CancelCreateFolder").addEventListener("click" , () => {
-            CreateFolder.close()
-        })
-
     </script>
 </body>
 </html>
