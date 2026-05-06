@@ -38,7 +38,11 @@ Router.get('/' , async (req,res) => {
 
 Router.get('/:foldername' , async (req,res) => {
     const files = await connectdb.ShowFile(req.url , req)
-    res.render('drive/drivefolder', {foldername : req.url.foldername , Files : files} )
+    res.render('drive/drivefolder', {foldername : req.url , Files : files} )
+})
+
+Router.post('/viewfile' , (req,res) => {
+
 })
 
 Router.post('/viewfolder' , async (req,res) => {

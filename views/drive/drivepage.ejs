@@ -8,7 +8,7 @@
 <body>
     <%- include('../component/side-bar') %>
     <main>
-        <h1>WELCOME BACK <%= foldername %></h1>
+        <h1>WELCOME BACK <%= user.username %></h1>
         <button class="Upload_file">Upload file</button>
         <button class="Create_Folder">Create folder</button>
         <div class="Folder">
@@ -22,6 +22,8 @@
             <% files.forEach(file => { %>
                 <form action="/drive/viewfile" method="post">
                     <h2><%=file.filename%></h2>
+                    <input type="hidden" value="<%=file.filename%>">
+                    <input type="hidden" value="<%=user.id%>">
                     <button type="submit">View File</button>
                 </form>
             <% }) %>

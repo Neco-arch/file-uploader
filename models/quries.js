@@ -34,7 +34,9 @@ class DbPart {
                 Owner: {
                     connect: { id: parseInt(req.body.Uploader_id) }
                 },
-                path: new URL(referer).pathname
+                path: new URL(referer).pathname,
+                time : new Date(),
+                size : req.file.size
             }
         })
     }
