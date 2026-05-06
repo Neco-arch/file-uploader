@@ -22,8 +22,8 @@
             <% files.forEach(file => { %>
                 <form action="/drive/viewfile" method="post">
                     <h2><%=file.filename%></h2>
-                    <input type="hidden" value="<%=file.filename%>">
-                    <input type="hidden" value="<%=user.id%>">
+                    <input type="hidden" value="<%=file.filename%>" name="filename">
+                    <input type="hidden" value="<%=user.id%>" name="Userid">
                     <button type="submit">View File</button>
                 </form>
             <% }) %>

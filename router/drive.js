@@ -1,6 +1,5 @@
 const express = require('express')
 const multer  = require('multer')
-const passport = require('passport')
 const path = require('path');
 const { DbPart } = require('../models/quries')
 
@@ -41,9 +40,7 @@ Router.get('/:foldername' , async (req,res) => {
     res.render('drive/drivefolder', {foldername : req.url , Files : files} )
 })
 
-Router.post('/viewfile' , (req,res) => {
 
-})
 
 Router.post('/viewfolder' , async (req,res) => {
     const path = '/drive' + '/' + req.body.foldername
@@ -63,6 +60,20 @@ Router.post('/upload' , upload.single('fileupload') , async (req,res) => {
     res.redirect("/drive")
 })
 
+// File Detail
+
+Router.post('/viewfile' , async (req,res) => {
+    const fileDetail = await connectdb.ShowFileDeatil(req);
+    req.session.filedeatil = fileDetail
+    res.redirect('/drive/file/filedetail')
+})
+
+Router.get('/file/filedetail' , async (req,res) => {
+    console.log(req.session.filedeatil)
+    const ownername = await connectdb.FindOwner(req.session.filedeatil[0].ownerId)
+    console.log(ownername)
+    res.render('file/filedetail' , {filedetail : req.session.filedeatil , Owner : ownername.username})
+})
 
 module.exports = Router
 

@@ -36,7 +36,7 @@ model Filedata {
   ownerId  Int
   Owner    userdata @relation(fields: [ownerId], references: [id])
   path String?
-  size Bytes
+  size Int
   time DateTime
 }
 

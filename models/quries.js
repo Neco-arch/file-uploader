@@ -36,7 +36,7 @@ class DbPart {
                 },
                 path: new URL(referer).pathname,
                 time : new Date(),
-                size : req.file.size
+                size : Number(req.file.size)
             }
         })
     }
@@ -51,6 +51,25 @@ class DbPart {
             }
         })
     }
+
+
+    async ShowFileDeatil(req) {
+        const filename = req.body.filename;
+        return await prismaController.filedata.findMany({
+            where : {
+                filename : filename
+            }
+        })
+    }
+
+    async FindOwner(Data) {
+        return await prismaController.userdata.findUnique({
+            where : {
+                id : Data
+            }
+        })
+    }
+    
     //Folder 
 
     async InsertFolderDetail(req, res) {
