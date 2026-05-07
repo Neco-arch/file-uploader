@@ -1,24 +1,44 @@
+const cloudinary = require('cloudinary').v2
 const express = require('express')
 const multer  = require('multer')
 const path = require('path');
-const { DbPart } = require('../models/quries')
+const { DbPart } = require('../models/quries');
+const { error } = require('console');
+const fs = require('node:fs')
 
 const connectdb = new DbPart
 
 const storage = multer.diskStorage({
   destination: function (req, file, cb) {
-    cb(null, path.join(__dirname , '../public/data'))
+    if (file.mimetype === 'image/jpeg' || file.mimetype === 'image/png' || file.mimetype === 'image/gif') {
+        cb(null, path.join(__dirname , '../public/data'))
+    }
   },
   filename: function (req, file, cb) {
-    const uniqueSuffix = Date.now() + '-' + Math.round(Math.random() * 1E9)
-    cb(null, file.fieldname + '-' + uniqueSuffix + path.extname(file.originalname))
+    const uploadPath = path.join(__dirname, '../public/data')
+    const filePath = path.join(uploadPath, file.originalname)
+
+    let counter = 1
+
+    if (fs.existsSync(filePath)) {
+        const newfilename = file.originalname + `(${counter})`
+        counter ++ 
+        cb(null , newfilename)
+    }
+    cb(null, file.originalname)
   }
-
-
 })
+
+cloudinary.config({
+    cloud_name: process.env.CLOUD_NAME,
+    api_key: process.env.API_KEY,
+    api_secret: process.env.API_SECERT,
+})
+
+
 const upload = multer({limits : {
-    fileSize : 10 * 1024 * 1024 ,
-    files : 4
+    fileSize : 50 * 1024 * 1024 ,
+    files : 2
 } , storage : storage})
 
 
@@ -35,29 +55,56 @@ Router.get('/' , async (req,res) => {
     }
 })
 
+// CRUD Folder
+
 Router.get('/:foldername' , async (req,res) => {
-    const files = await connectdb.ShowFile(req.url , req)
+    const realurl = '/drive' + req.url
+    const files = await connectdb.ShowFile(realurl , req)
+    console.log(files)
     res.render('drive/drivefolder', {foldername : req.url , Files : files} )
 })
-
-
 
 Router.post('/viewfolder' , async (req,res) => {
     const path = '/drive' + '/' + req.body.foldername
     res.redirect(path)
 })
 
-
-
 Router.post('/createfolder' , async (req,res) => {
     await connectdb.InsertFolderDetail(req,res)  
     res.redirect("/drive")
 })
 
+Router.post('/deletefolder' , async (req,res) => { 
+    await connectdb.DeleteFolder(req,res)
+    res.redirect('/drive')
+})
+
+// CRUD File
 
 Router.post('/upload' , upload.single('fileupload') , async (req,res) => {
-    await connectdb.InsertFileDetail(req,res)
-    res.redirect("/drive")
+    try {
+        const result = await cloudinary.uploader.upload(
+            req.file.path , {
+            fetch_format: 'auto',
+            quality: 'auto',
+            }
+        )
+        req.cloudinaryurl = result
+        const result2 = await connectdb.InsertFileDetail(req,res)
+        await fs.unlinkSync(req.file.path)
+        res.redirect("/drive")
+    } catch(erro) {
+        console.log(erro)
+    }
+})
+
+Router.post('/deletefile' , async (req,res) => {
+    const filename = req.body.filename
+    const fileid = req.body.fileid
+    const result = await connectdb.ShowFileDeatil(req)
+    cloudinary.uploader.destroy(result.url , {invalidate : true} )
+    await connectdb.Deletefile(filename,fileid)
+    res.redirect('/drive')
 })
 
 // File Detail
@@ -69,10 +116,12 @@ Router.post('/viewfile' , async (req,res) => {
 })
 
 Router.get('/file/filedetail' , async (req,res) => {
-    console.log(req.session.filedeatil)
     const ownername = await connectdb.FindOwner(req.session.filedeatil[0].ownerId)
-    console.log(ownername)
-    res.render('file/filedetail' , {filedetail : req.session.filedeatil , Owner : ownername.username})
+    const downloadurl = cloudinary.url(req.session.filedeatil[0].url , {
+        flags : 'attachment'
+    })
+    const image = cloudinary.url(req.session.filedeatil[0].url)
+    res.render('file/filedetail' , {filedetail : req.session.filedeatil , Owner : ownername.username , url : downloadurl , image : image })
 })
 
 module.exports = Router

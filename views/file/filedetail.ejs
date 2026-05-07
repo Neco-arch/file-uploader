@@ -7,13 +7,14 @@
 </head>
 <body>
     <div class="FileDetail">
+        <img src="<%=image %>">
         <h2>Filename : <%=filedetail[0].filename %> </h2>
         <h2>Uploader : <%= Owner %></h2>
         <h2>Time : <%=filedetail[0].time %></h2>
         <h2>Size : <%=filedetail[0].size  %> Bytes</h2>
-        <form action="drive/downloadfile" method="post">
-            <button>Download File</button>
-        </form>
+            <a href="<%=url%>">
+                <button>Download File</button>
+            </a>
     </div>
 </body>
 </html>

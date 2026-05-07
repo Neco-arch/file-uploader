@@ -34,6 +34,7 @@ class DbPart {
                 Owner: {
                     connect: { id: parseInt(req.body.Uploader_id) }
                 },
+                url : req.cloudinaryurl.public_id ,
                 path: new URL(referer).pathname,
                 time : new Date(),
                 size : Number(req.file.size)
@@ -57,7 +58,7 @@ class DbPart {
         const filename = req.body.filename;
         return await prismaController.filedata.findMany({
             where : {
-                filename : filename
+                filename : filename,
             }
         })
     }
@@ -65,7 +66,16 @@ class DbPart {
     async FindOwner(Data) {
         return await prismaController.userdata.findUnique({
             where : {
-                id : Data
+                id : Data,
+            }
+        })
+    }
+
+    async Deletefile(filename ,fileid) {
+        await prismaController.filedata.delete({
+            where : {
+                fileid : parseInt(fileid),
+                filename : filename
             }
         })
     }
@@ -93,11 +103,19 @@ class DbPart {
     }
 
     async DeleteFolder(req, res) {
+        const pathdrive = '/drive' + '/' + req.body.foldername
         await prismaController.folder.delete({
             where: {
-                foldername: req.foldername
+                foldername: req.body.foldername,
+                id : req.body.folderid
             }
         })
+        const result = await prismaController.filedata.deleteMany({
+            where : {
+                path : pathdrive
+            }
+        })
+        console.log(result)
     }
 
 

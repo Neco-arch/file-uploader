@@ -35,7 +35,8 @@ model Filedata {
   filename String   
   ownerId  Int
   Owner    userdata @relation(fields: [ownerId], references: [id])
-  path String?
+  url String
+  path String
   size Int
   time DateTime
 }

@@ -13,19 +13,36 @@
         <button class="Create_Folder">Create folder</button>
         <div class="Folder">
             <% items.forEach(item => { %>
-                <form action="/drive/viewfolder" method="post">
+                <div>
                     <h2><%=item.foldername %></h2>
+                    <div class="Action">
+                    <form action="/drive/viewfolder" method="post">
                     <input type="hidden" value="<%=item.foldername %>" name="foldername">
+                    <input type="hidden" value="<%=item.id %>" name="folderid">
                     <button type="submit">View Folder</button>
-                </form>
+                    </form>
+                    <form action="/drive/deletefolder" method="post">
+                        <input type="hidden" value="<%=item.foldername %>" name="foldername">
+                        <input type="hidden" value="<%=item.id %>" name="folderid">
+                        <button type="submit">Delete Folder</button>
+                    </form>
+                    </div>
+                </div>
             <% }) %>
             <% files.forEach(file => { %>
-                <form action="/drive/viewfile" method="post">
-                    <h2><%=file.filename%></h2>
+                <div>
+                <h2><%=file.filename%></h2>
+                <form action="/drive/viewfile" method="post">      
                     <input type="hidden" value="<%=file.filename%>" name="filename">
                     <input type="hidden" value="<%=user.id%>" name="Userid">
                     <button type="submit">View File</button>
                 </form>
+                <form action="/drive/deletefile" method="post">
+                    <input type="hidden" value="<%=file.fileid   %>" name="fileid">
+                    <input type="hidden" value="<%=file.filename%>" name="filename">
+                    <button type="submit">Delete File</button>
+                </form>
+                </div>
             <% }) %>
         </div>
     </main>
@@ -72,6 +89,7 @@
         document.querySelector(".CancelCreateFolder").addEventListener("click" , () => {
             CreateFolder.close()
         })
+
 
     </script>
 </body>
