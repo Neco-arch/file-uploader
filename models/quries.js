@@ -36,7 +36,7 @@ class DbPart {
                 },
                 url : req.cloudinaryurl.public_id ,
                 path: new URL(referer).pathname,
-                time : new Date().toLocaleString(),
+                time : new Date(),
                 size : Number(req.file.size)
             }
         })

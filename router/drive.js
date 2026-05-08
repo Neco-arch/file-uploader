@@ -3,10 +3,13 @@ const express = require('express')
 const multer  = require('multer')
 const path = require('path');
 const { DbPart } = require('../models/quries');
-const { error } = require('console');
-const fs = require('node:fs')
+const fs = require('node:fs');
+const { Crud } = require('../models/crud');
 
+
+// Load models
 const connectdb = new DbPart
+const crud = new Crud
 
 const storage = multer.diskStorage({
   destination: function (req, file, cb) {
@@ -29,16 +32,9 @@ const storage = multer.diskStorage({
   }
 })
 
-cloudinary.config({
-    cloud_name: process.env.CLOUD_NAME,
-    api_key: process.env.API_KEY,
-    api_secret: process.env.API_SECERT,
-})
-
-
 const upload = multer({limits : {
     fileSize : 50 * 1024 * 1024 ,
-    files : 2
+    files : 1
 } , storage : storage})
 
 
@@ -60,7 +56,6 @@ Router.get('/' , async (req,res) => {
 Router.get('/:foldername' , async (req,res) => {
     const realurl = '/drive' + req.url
     const files = await connectdb.ShowFile(realurl , req)
-    console.log(files)
     res.render('drive/drivefolder', {foldername : req.url , Files : files} )
 })
 
@@ -90,38 +85,17 @@ Router.post('/editfolder' , async (req,res) => {
 // CRUD File
 
 Router.post('/upload' , upload.single('fileupload') , async (req,res) => {
-    try {
-        const result = await cloudinary.uploader.upload(
-            req.file.path , {
-            fetch_format: 'auto',
-            quality: 'auto',
-            }
-        )
-        req.cloudinaryurl = result
-        const result2 = await connectdb.InsertFileDetail(req,res)
-        await fs.unlinkSync(req.file.path)
-        res.redirect("/drive")
-    } catch(erro) {
-        console.log(erro)
-    }
+    await crud.UploadFile(req,res)
+    res.redirect("/drive")
 })
 
 Router.post('/deletefile' , async (req,res) => {
-    const filename = req.body.filename
-    const fileid = req.body.fileid
-    const result = await connectdb.ShowFileDeatil(req)
-    cloudinary.uploader.destroy(result.url , {invalidate : true} )
-    await connectdb.Deletefile(filename,fileid)
+    await crud.deletefile(req,res)
     res.redirect('/drive')
 })
 
 Router.post('/editfile' , async (req,res) => {
-    const newfilename = req.body.newfilename
-    const oldfilename = req.body.filename
-    const fileid = req.body.fileid
-    const filedetail = await connectdb.ShowFileDeatil(req)
-    await connectdb.Editfile(oldfilename,newfilename,fileid)
-    cloudinary.uploader.rename(filedetail[0].fileid)
+    await crud.Editfile(req,res)
     res.redirect('/drive')
 })
 
@@ -134,12 +108,7 @@ Router.post('/viewfile' , async (req,res) => {
 })
 
 Router.get('/file/filedetail' , async (req,res) => {
-    const ownername = await connectdb.FindOwner(req.session.filedeatil[0].ownerId)
-    const downloadurl = cloudinary.url(req.session.filedeatil[0].url , {
-        flags : 'attachment'
-    })
-    const image = cloudinary.url(req.session.filedeatil[0].url)
-    res.render('file/filedetail' , {filedetail : req.session.filedeatil , Owner : ownername.username , url : downloadurl , image : image })
+    await crud.Showfiledetail(req,res)
 })
 
 
