@@ -8,8 +8,7 @@ const passport = require("passport");
 const LocalStrategy = require('passport-local').Strategy;
 const { prismaController } = require("./lib/prisma.js")
 const { PrismaSessionStore } = require('@quixo3/prisma-session-store')
-
-
+const { Checkauthuser } = require('./controller/auth.js')
 const app = express();
 app.set("views", path.join(__dirname, "views"));
 app.set("view engine", "ejs");
@@ -53,15 +52,19 @@ app.use(globalreq_user)
 const sign_up = require('./router/sign-up.js')
 const drive = require('./router/drive.js')
 
-app.use('/sign-up' , sign_up )
-app.use('/drive' , drive)
+app.use('/sign-up', Checkauthuser , sign_up )
+app.use('/drive'  , Checkauthuser , drive)
 
 //Router in main
 
 app.get("/", (req, res) => res.render("main" , {user : req.user}));
 
-app.get("/log-in" , async (req,res) => {
-  res.render("log-in/log-in")
+app.get("/log-in", Checkauthuser , async (req, res ,next) => {
+    if (req.authUser) {
+      return res.redirect('/')
+    }
+    
+    res.render("log-in/log-in")
 })
 
 app.post(

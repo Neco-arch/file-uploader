@@ -42,6 +42,16 @@
                     <input type="hidden" value="<%=file.filename%>" name="filename">
                     <button type="submit">Delete File</button>
                 </form>
+                <button class="Editfile">Edit file</button>
+                <dialog open="" id="editform_id">
+                    <form action="/drive/editfile"> 
+                    <input type="hidden" value="<%=file.fileid   %>" name="fileid">
+                    <input type="hidden" value="<%=file.filename%>" name="filename">
+                    <label>Filename : </label><input type="text" name="newfilename">
+                    <button type="submit">Edit file</button>
+                    </form>
+                    <button class="Closeedit">Close</button>
+                </dialog>
                 </div>
             <% }) %>
         </div>
@@ -70,9 +80,11 @@
             <button class="CancelCreateFolder">Cancel</button>
         <% } %>
     </dialog>
+
     <script>
         const UploadForm = document.querySelector("#UploadFile_Form")
         const CreateFolder = document.querySelector("#CreateFolder_Form")
+        const EditForm = document.querySelector("#editform_id")
 
         document.querySelector(".Upload_file").addEventListener("click" , () => {
             UploadForm.showModal()
@@ -88,6 +100,10 @@
 
         document.querySelector(".CancelCreateFolder").addEventListener("click" , () => {
             CreateFolder.close()
+        })
+
+        document.querySelector(".Editfile").addEventListener("click" , () => {
+            EditForm.
         })
 
 

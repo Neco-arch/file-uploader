@@ -36,7 +36,7 @@ class DbPart {
                 },
                 url : req.cloudinaryurl.public_id ,
                 path: new URL(referer).pathname,
-                time : new Date(),
+                time : new Date().toLocaleString(),
                 size : Number(req.file.size)
             }
         })
@@ -79,6 +79,10 @@ class DbPart {
             }
         })
     }
+
+    async Editfile(oldname,newname) {
+        prismaController.filedata.update()
+    }
     
     //Folder 
 
@@ -107,7 +111,7 @@ class DbPart {
         await prismaController.folder.delete({
             where: {
                 foldername: req.body.foldername,
-                id : req.body.folderid
+                id : parseInt(req.body.folderid)
             }
         })
         const result = await prismaController.filedata.deleteMany({
