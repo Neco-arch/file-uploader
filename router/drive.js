@@ -79,6 +79,14 @@ Router.post('/deletefolder' , async (req,res) => {
     res.redirect('/drive')
 })
 
+Router.post('/editfolder' , async (req,res) => {
+    const foldername = req.body.foldername
+    const folderid = req.body.folderid
+    const newfoldername = req.body.newfoldername
+    await connectdb.EditFoldername(foldername,newfoldername,folderid)
+    res.redirect("/drive")
+}) 
+
 // CRUD File
 
 Router.post('/upload' , upload.single('fileupload') , async (req,res) => {
@@ -107,6 +115,16 @@ Router.post('/deletefile' , async (req,res) => {
     res.redirect('/drive')
 })
 
+Router.post('/editfile' , async (req,res) => {
+    const newfilename = req.body.newfilename
+    const oldfilename = req.body.filename
+    const fileid = req.body.fileid
+    const filedetail = await connectdb.ShowFileDeatil(req)
+    await connectdb.Editfile(oldfilename,newfilename,fileid)
+    cloudinary.uploader.rename(filedetail[0].fileid)
+    res.redirect('/drive')
+})
+
 // File Detail
 
 Router.post('/viewfile' , async (req,res) => {
@@ -123,6 +141,8 @@ Router.get('/file/filedetail' , async (req,res) => {
     const image = cloudinary.url(req.session.filedeatil[0].url)
     res.render('file/filedetail' , {filedetail : req.session.filedeatil , Owner : ownername.username , url : downloadurl , image : image })
 })
+
+
 
 module.exports = Router
 

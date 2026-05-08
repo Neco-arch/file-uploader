@@ -80,8 +80,19 @@ class DbPart {
         })
     }
 
-    async Editfile(oldname,newname) {
-        prismaController.filedata.update()
+    async Editfile(oldname,newname , fileid) {
+         const result = await prismaController.filedata.update(
+            {where : {
+                filename : oldname,
+                fileid : parseInt(fileid)
+            } ,
+            data : {
+                filename : newname,
+            }
+            }
+        )
+
+        console.log(result)
     }
     
     //Folder 
@@ -120,6 +131,18 @@ class DbPart {
             }
         })
         console.log(result)
+    }
+
+    async EditFoldername(oldfoldername,newfoldername , folderid) {
+        await prismaController.folder.update({
+            where : {
+                foldername : oldfoldername,
+            id : parseInt(folderid)            },
+
+            data  : {
+                foldername : newfoldername
+            }
+        })
     }
 
 
