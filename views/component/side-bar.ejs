@@ -2,7 +2,16 @@
     <div>
         <a href="/">Home</a>
         <a href="/drive">Drive</a>
-        <a href="/log-in">Login</a>
-        <a href="/sign-up">sign-up</a>
+    </div>
+    <div>
+        <h1>Goga drive</h1>
+    </div>
+    <div class="User_action">
+        <% if (locals.user) { %>
+            <a href="/logout">Logout</a>
+        <% } else { %>
+            <a href="/sign-up">Sign-up</a>
+            <a href="/log-in">Login</a>
+        <% } %>
     </div>
 </nav>

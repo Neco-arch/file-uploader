@@ -5,18 +5,22 @@
     <meta charset="UTF-8">
     <meta name="viewport" content="width=device-width, initial-scale=1.0">
     <title>Drive</title>
+    <link rel="stylesheet" href="/css/nav.css">
+    <link rel="stylesheet" href="/css/drive.css">
 </head>
 
 <body>
-    <%- include('../component/side-bar') %>
+    <%- include('../component/side-bar') , { user: user } %>
         <main>
             <h1>WELCOME BACK <%= user.username %>
             </h1>
-            <button class="Upload_file">Upload file</button>
-            <button class="Create_Folder">Create folder</button>
+            <div class="Create_wrapper">
+                <button class="Upload_file">Upload file</button>
+                <button class="Create_Folder">Create folder</button>
+            </div>
             <div class="Folder">
                 <% items.forEach(item=> { %>
-                    <div>
+                    <div class="Each_folder">
                         <h2>
                             <%=item.foldername %>
                         </h2>
@@ -32,45 +36,51 @@
                                 <button type="submit">Delete Folder</button>
                             </form>
                             <button class="editfolder">Edit folder</button>
-                            <dialog  id="editfolderform_id">
-                                    <form action="/drive/editfolder" method="post">
-                                        <input type="hidden" value="<%=item.id  %>" name="folderid">
-                                        <input type="hidden" value="<%=item.foldername%>" name="foldername">
-                                        <label>Filename : </label><input type="text" name="newfoldername" value="<%=item.foldername%>">
-                                        <button type="submit">Edit file</button>
-                                    </form>
-                                    <button class="Close_edit_form">Close</button>
-                                </dialog>
+                            <dialog id="editfolderform_id">
+                                <form action="/drive/editfolder" method="post">
+                                    <input type="hidden" value="<%=item.id  %>" name="folderid">
+                                    <input type="hidden" value="<%=item.foldername%>" name="foldername">
+                                    <label>Filename : </label><input type="text" name="newfoldername"
+                                        value="<%=item.foldername%>">
+                                    <button type="submit">Edit file</button>
+                                </form>
+                                <button class="Close_edit_form">Close</button>
+                            </dialog>
                         </div>
                     </div>
                     <% }) %>
-                        <% files.forEach(file=> { %>
-                            <div>
-                                <h2>
-                                    <%=file.filename%>
-                                </h2>
-                                <form action="/drive/viewfile" method="post">
-                                    <input type="hidden" value="<%=file.filename%>" name="filename">
-                                    <input type="hidden" value="<%=user.id%>" name="Userid">
-                                    <button type="submit">View File</button>
-                                </form>
-                                <form action="/drive/deletefile" method="post">
-                                    <input type="hidden" value="<%=file.fileid   %>" name="fileid">
-                                    <input type="hidden" value="<%=file.filename%>" name="filename">
-                                    <button type="submit">Delete File</button>
-                                </form>
-                                <button class="Editfile">Edit file</button>
-                                <dialog  id="editform_id">
-                                    <form action="/drive/editfile" method="post">
-                                        <input type="hidden" value="<%=file.fileid   %>" name="fileid">
-                                        <input type="hidden" value="<%=file.filename%>" name="filename">
-                                        <label>Filename : </label><input type="text" name="newfilename" value="<%=file.filename%>">
-                                        <button type="submit">Edit file</button>
-                                    </form>
-                                    <button class="Close_edit">Close</button>
-                                </dialog>
-                            </div>
-                            <% }) %>
+            </div>
+            <div class="file">
+                <% files.forEach(file=> { %>
+                    <div class="each_files">
+                        <h2>
+                            <%=file.filename%>
+                        </h2>
+                        <div class="Action">
+                        <form action="/drive/viewfile" method="post">
+                            <input type="hidden" value="<%=file.filename%>" name="filename">
+                            <input type="hidden" value="<%=user.id%>" name="Userid">
+                            <button type="submit">View File</button>
+                        </form>
+                        <form action="/drive/deletefile" method="post">
+                            <input type="hidden" value="<%=file.fileid   %>" name="fileid">
+                            <input type="hidden" value="<%=file.filename%>" name="filename">
+                            <button type="submit">Delete File</button>
+                        </form>
+                        <button class="Editfile">Edit file</button>
+                        <dialog id="editform_id">
+                            <form action="/drive/editfile" method="post">
+                                <input type="hidden" value="<%=file.fileid   %>" name="fileid">
+                                <input type="hidden" value="<%=file.filename%>" name="filename">
+                                <label>Filename : </label><input type="text" name="newfilename"
+                                    value="<%=file.filename%>">
+                                <button type="submit">Edit file</button>
+                            </form>
+                            <button class="Close_edit">Close</button>
+                        </dialog>
+                        </div>
+                    </div>
+                    <% }) %>
             </div>
         </main>
 
@@ -98,46 +108,7 @@
                 <% } %>
         </dialog>
 
-        <script>
-            const UploadForm = document.querySelector("#UploadFile_Form")
-            const CreateFolder = document.querySelector("#CreateFolder_Form")
-            const EditForm = document.querySelector("#editform_id")
-            const EditFolerForm = document.querySelector('#editfolderform_id')
-
-            document.querySelector(".Upload_file").addEventListener("click", () => {
-                UploadForm.showModal()
-            })
-
-            document.querySelector(".Cancel_UploadFile").addEventListener("click", () => {
-                UploadForm.close()
-            })
-
-            document.querySelector(".Create_Folder").addEventListener("click", () => {
-                CreateFolder.showModal()
-            })
-
-            document.querySelector(".CancelCreateFolder").addEventListener("click", () => {
-                CreateFolder.close()
-            })
-
-            document.querySelector(".Editfile").addEventListener("click", () => {
-                EditForm.showModal()
-            })
-
-            document.querySelector(".Close_edit").addEventListener("click" , () => {
-                EditForm.close()
-            })
-
-            document.querySelector(".Close_edit_form").addEventListener("click" , () => {
-                EditFolerForm.close()
-            })
-
-            document.querySelector(".editfolder").addEventListener("click" , () => {
-                EditFolerForm.showModal()
-            })
-
-
-        </script>
+        <script src="/js/drivepage.js"></script>
 </body>
 
 </html>

@@ -1,0 +1,42 @@
+main {
+    padding: 3rem;
+}
+
+
+.Uploadfile , .Create_Folder {
+    width: 100px;
+    height: 40px;
+}
+
+.Create_wrapper {
+    display: flex;
+    gap: 1rem;
+}
+
+
+.Folder {
+    display: grid;
+    grid-template-rows: repeat(1 , 1fr);
+}
+
+.Each_folder {
+    display: flex;
+    gap: 2rem;
+}
+
+.Action {
+    display: flex;
+    justify-content: center;
+    align-items: center;
+    gap: 1rem;
+}
+
+.file {
+    display: grid;
+    grid-template-rows: repeat(1 , 1fr);
+}
+
+.each_files {
+    display: flex;
+    gap: 2rem;
+}

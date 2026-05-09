@@ -10,9 +10,13 @@ const { prismaController } = require("./lib/prisma.js")
 const { PrismaSessionStore } = require('@quixo3/prisma-session-store')
 const { Checkauthuser } = require('./controller/auth.js')
 const app = express();
+
+// Express set up 
+
 app.set("views", path.join(__dirname, "views"));
 app.set("view engine", "ejs");
 app.use(express.urlencoded({ extended: true }))
+app.use(express.static('public'));
 
 // Passport 
 
@@ -74,6 +78,11 @@ app.post(
     failureRedirect: "/log-in"
   }),
 );
+
+app.get('/logout' , (req,res) => {
+  res.clearCookie('connect.sid')
+  console.log('clearcookie')
+})
 
 
 app.listen(3000, (error) => {

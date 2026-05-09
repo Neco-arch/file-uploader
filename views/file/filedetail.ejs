@@ -4,10 +4,13 @@
     <meta charset="UTF-8">
     <meta name="viewport" content="width=device-width, initial-scale=1.0">
     <title>Drive</title>
+    <link rel="stylesheet" href="/css/nav.css">
 </head>
 <body>
+    <%- include('../component/side-bar') , { user: user } %>
+    <button class="Backtodrive">Back to drive</button>
     <div class="FileDetail">
-        <img src="<%=image %>">
+        <img src="<%=image %>" width="400px">
         <h2>Filename : <%=filedetail[0].filename %> </h2>
         <h2>Uploader : <%= Owner %></h2>
         <h2>Time : <%=filedetail[0].time %></h2>
@@ -16,5 +19,10 @@
                 <button>Download File</button>
             </a>
     </div>
+    <script>
+        document.querySelector(".Backtodrive").addEventListener("click" , () => {
+            window.location.href = '/drive'
+        })
+    </script>
 </body>
 </html>
